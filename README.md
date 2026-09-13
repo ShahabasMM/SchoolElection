@@ -1,6 +1,6 @@
 # GHSS EVM — GHSS MEZHATHUR
 
-   _install : https://betadrop.app/install/LsPdbB_
+   _install : https://betadrop.app/install/gtePZp_
 
 
 
