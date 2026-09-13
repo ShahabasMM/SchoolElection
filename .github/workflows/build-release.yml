@@ -1,0 +1,87 @@
+name: GHSS EVM APK Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number (example: 1.0.0)"
+        required: true
+        type: string
+
+      release_name:
+        description: "Release name"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build and Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+
+      - name: Flutter version
+        run: flutter --version
+
+
+      - name: Install dependencies
+        run: flutter pub get
+
+
+      - name: Build APK
+        run: flutter build apk --release
+
+
+      - name: Prepare APK
+        run: |
+          mkdir -p release
+
+          cp build/app/outputs/flutter-apk/app-release.apk \
+            "release/GHSS-EVM-v${{ inputs.version }}.apk"
+
+          ls -lh release/
+
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ inputs.version }}"
+          name: "${{ inputs.release_name }}"
+          target_commitish: ${{ github.sha }}
+
+          body: |
+            # GHSS EVM
+
+            **School:** GHSS MEZHATHUR
+
+            **Version:** ${{ inputs.version }}
+
+            Official Android APK release.
+
+            Download the APK below.
+
+          files: |
+            release/GHSS-EVM-v${{ inputs.version }}.apk
+
+          generate_release_notes: true
