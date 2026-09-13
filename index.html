@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2-Second High Volume Tone</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f4f6f9;
+        }
+        .container {
+            display: inline-block;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        button {
+            font-size: 18px;
+            padding: 12px 24px;
+            margin: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .play-btn {
+            background-color: #0056b3;
+            color: white;
+        }
+        .download-btn {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>2-Second Loud Bleep / Voting Tone</h2>
+        <button class="play-btn" onclick="playBeep()">Play Sound</button>
+        <button class="download-btn" onclick="downloadWav()">Download WAV</button>
+    </div>
+
+    <script>
+        const SAMPLE_RATE = 44100;
+        const DURATION = 2.5;
+        const FREQUENCY = 1000;
+
+        // Play sound using Web Audio API (Square wave for higher volume)
+        function playBeep() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            // Switched to 'square' wave to make the 1000Hz tone sound punchier & louder
+            oscillator.type = 'square';
+            oscillator.frequency.value = FREQUENCY; 
+
+            // Boosted gain to 0.95 for maximum volume
+            gainNode.gain.setValueAtTime(0.95, audioCtx.currentTime);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + DURATION);
+        }
+
+        // Generate audio buffer for WAV file creation
+        function generateSamples() {
+            const totalSamples = Math.floor(SAMPLE_RATE * DURATION);
+            const samples = new Float32Array(totalSamples);
+            for (let i = 0; i < totalSamples; i++) {
+                const t = i / SAMPLE_RATE;
+                // Square wave math matching the playback node
+                samples[i] = Math.sin(2 * Math.PI * FREQUENCY * t) >= 0 ? 0.95 : -0.95;
+            }
+            return samples;
+        }
+
+        // Download generated WAV file
+        function downloadWav() {
+            const samples = generateSamples();
+            const buffer = createWavBuffer(samples, SAMPLE_RATE);
+            const blob = new Blob([buffer], { type: 'audio/wav' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'loud_censor_tone_2s.wav';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // WAV Header & Data construction
+        function createWavBuffer(samples, sampleRate) {
+            const buffer = new ArrayBuffer(44 + samples.length * 2);
+            const view = new DataView(buffer);
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + samples.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // PCM
+            view.setUint16(22, 1, true); // Mono
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, samples.length * 2, true);
+
+            let offset = 44;
+            for (let i = 0; i < samples.length; i++, offset += 2) {
+                const s = Math.max(-1, Math.min(1, samples[i]));
+                view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            }
+
+            return buffer;
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+    </script>
+</body>
+</html>

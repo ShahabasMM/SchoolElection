@@ -1,0 +1,1 @@
+@echo off\nsetlocal\ncd /d "%~dp0"\n\necho Cleaning Flutter and Gradle build caches...\ncall flutter clean\nif exist build rmdir /s /q build\nif exist .dart_tool rmdir /s /q .dart_tool\n\ncd android\ncall gradlew --stop\ncd ..\n\ncall flutter pub get\n\necho.\necho Clean complete. Run: flutter run\npause\n

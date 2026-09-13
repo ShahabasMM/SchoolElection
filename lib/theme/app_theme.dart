@@ -1,0 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+const navy=Color(0xFF102A43),navy2=Color(0xFF163B5C),blue=Color(0xFF247BFF),blueSoft=Color(0xFFEAF3FF),page=Color(0xFFF5F7FB),textDark=Color(0xFF172B4D),muted=Color(0xFF718096),border=Color(0xFFE3EAF2),green=Color(0xFF18A66A),red=Color(0xFFE5484D);
+const ballotBg=Color(0xFFE9EAEC),ballotPanel=Color(0xFFD3D5D8),ballotHeader=Color(0xFFBFC3C7),ballotBlue=Color(0xFF174A8B),ballotRed=Color(0xFFB5232A),ballotGreen=Color(0xFF2E9E62),ballotPaper=Color(0xFFF3F4F5);
+ThemeData appTheme()=>ThemeData(useMaterial3:true,scaffoldBackgroundColor:page,colorScheme:ColorScheme.fromSeed(seedColor:blue),textTheme:GoogleFonts.poppinsTextTheme(),inputDecorationTheme:InputDecorationTheme(filled:true,fillColor:Colors.white,border:OutlineInputBorder(borderRadius:BorderRadius.circular(15),borderSide:const BorderSide(color:border)),enabledBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(15),borderSide:const BorderSide(color:border)),focusedBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(15),borderSide:const BorderSide(color:blue,width:1.6))));
