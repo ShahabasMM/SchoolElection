@@ -1,5 +1,9 @@
 # GHSS EVM — GHSS MEZHATHUR
 
+   install : https://betadrop.app/install/LsPdbB
+            ![Uploading image.png…]()
+
+
 A clean, warm, physical-EVM-inspired Flutter school election app.
 
 ## Storage
