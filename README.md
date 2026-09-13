@@ -1,7 +1,11 @@
 # GHSS EVM — GHSS MEZHATHUR
 
    install : https://betadrop.app/install/LsPdbB
-            <img width="320" height="320" alt="image" src="https://github.com/user-attachments/assets/29a3ea51-4772-4c2a-8e64-267c0f22e2d2" />
+
+
+
+<img width="256" height="256" alt="image" src="https://github.com/user-attachments/assets/dcd3ec78-c340-40eb-ad55-ce61ca620cb3" />
+
 
 
 
